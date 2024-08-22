@@ -1,0 +1,12 @@
+schema:
+  Card:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: The card ID.
+        example: 0
+      name:
+        type: string
+        description: The card's name.
+        example: Pikachu

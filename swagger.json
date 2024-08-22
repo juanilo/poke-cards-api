@@ -1,0 +1,11 @@
+{
+  "definition": {
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Pokemon Cards API",
+      "version": "1.0.0",
+      "description": "Express API implementation of Pokemon Cards"
+    }
+  },
+  "apis": ["./src/routes/*.yml"]
+}
