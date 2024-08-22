@@ -3,8 +3,16 @@ import { QueryResult } from 'pg';
 
 import { PokemonCard, AttackType, AbilityType, ResultType } from '../types';
 
-export const findAll = async () => {
-  const response: QueryResult = await connection.query('SELECT * FROM cards');
+export const count = async () => {
+  const response: QueryResult = await connection.query('SELECT COUNT(*) FROM cards');
+  return response;
+}
+
+export const findAll = async (limit: number, page: number ) => {
+  const query = 'SELECT * FROM cards LIMIT $1 OFFSET $2';
+  const offset = (page - 1) * limit;
+  const params = [limit, offset];
+  const response: QueryResult = await connection.query(query, params);
   return response;
 };
 

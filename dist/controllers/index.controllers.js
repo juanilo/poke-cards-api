@@ -10,16 +10,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getWeaknesses = exports.getResistances = exports.getFightResult = exports.deleteCard = exports.putCard = exports.postCard = exports.getAllNames = exports.getCardById = exports.getCards = void 0;
-const cards_services_1 = require("../services/cards.services");
+const cards_model_1 = require("../model/cards.model");
 // GET /cards
-const getCards = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { rows: cards } = yield (0, cards_services_1.findAll)();
-    res.status(200).json(cards);
+const getCards = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { limit, page } = req.query;
+    if (limit && +limit < 1) {
+        return res.status(404).json({ message: 'Limit must be positive.' });
+    }
+    if (page && +page < 1) {
+        return res.status(404).json({ message: 'Page must be positive.' });
+    }
+    const { rows: countRows } = yield (0, cards_model_1.count)();
+    const { rows: cards } = yield (0, cards_model_1.findAll)(limit ? +limit : 99, page ? +page : 1);
+    res.status(200).json({ cards: cards, count: countRows.at(0).count });
 });
 exports.getCards = getCards;
 // GET /cards/:id
 const getCardById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { rows: cards, rowCount: count } = yield (0, cards_services_1.findById)(req.params.id);
+    const { rows: cards, rowCount: count } = yield (0, cards_model_1.findById)(req.params.id);
     if (count === 0) {
         return res.status(404).json({ message: 'Card not found' });
     }
@@ -28,19 +36,19 @@ const getCardById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.getCardById = getCardById;
 // GET /cards/names
 const getAllNames = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { rows: names, rowCount: count } = yield (0, cards_services_1.findAllNames)();
+    const { rows: names, rowCount: count } = yield (0, cards_model_1.findAllNames)();
     res.status(200).json(names);
 });
 exports.getAllNames = getAllNames;
 // POST /cards
 const postCard = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, cards_services_1.create)(req.body);
+    yield (0, cards_model_1.create)(req.body);
     res.status(201).json({ message: 'Card successfully created' });
 });
 exports.postCard = postCard;
 // PUT /cards/:id
 const putCard = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { rowCount: count } = yield (0, cards_services_1.update)(req.body, req.params.id);
+    const { rowCount: count } = yield (0, cards_model_1.update)(req.body, req.params.id);
     if (count === 0) {
         return res.status(404).json({ message: 'Card not found' });
     }
@@ -49,7 +57,7 @@ const putCard = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.putCard = putCard;
 // DELETE /cards/:id
 const deleteCard = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { rowCount: count } = yield (0, cards_services_1.remove)(req.params.id);
+    const { rowCount: count } = yield (0, cards_model_1.remove)(req.params.id);
     if (count === 0) {
         return res.status(404).json({ message: 'Card not found' });
     }
@@ -58,8 +66,8 @@ const deleteCard = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.deleteCard = deleteCard;
 // GET /cards/:id/attack'
 const getFightResult = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { rows: attackerCards, rowCount: attackerCardCount } = yield (0, cards_services_1.findById)(req.params.id);
-    const { rows: targetCards, rowCount: targetCardCount } = yield (0, cards_services_1.findById)(req.body.targetId);
+    const { rows: attackerCards, rowCount: attackerCardCount } = yield (0, cards_model_1.findById)(req.params.id);
+    const { rows: targetCards, rowCount: targetCardCount } = yield (0, cards_model_1.findById)(req.body.targetId);
     if (attackerCardCount === 0 || targetCardCount === 0) {
         return res.status(404).json({ message: `Attacker/Target card not found` });
     }
@@ -69,27 +77,27 @@ const getFightResult = (req, res) => __awaiter(void 0, void 0, void 0, function*
     if (!attack) {
         return res.status(406).json({ message: 'Attack not found' });
     }
-    const results = yield (0, cards_services_1.battle)(attackerCard, attack, targetCard);
+    const results = yield (0, cards_model_1.battle)(attackerCard, attack, targetCard);
     res.status(200).json(results);
 });
 exports.getFightResult = getFightResult;
 // GET /cards/:id/resistances
 const getResistances = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { rows: cards, rowCount: count } = yield (0, cards_services_1.findById)(req.params.id);
+    const { rows: cards, rowCount: count } = yield (0, cards_model_1.findById)(req.params.id);
     if (count === 0) {
         return res.status(404).json({ message: 'Card not found' });
     }
-    const { rows: resistances } = yield (0, cards_services_1.resistancesTo)(cards.at(0));
+    const { rows: resistances } = yield (0, cards_model_1.resistancesTo)(cards.at(0));
     res.status(200).json({ result: resistances });
 });
 exports.getResistances = getResistances;
 // GET /cards/:id/weaknesses
 const getWeaknesses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { rows: cards, rowCount: count } = yield (0, cards_services_1.findById)(req.params.id);
+    const { rows: cards, rowCount: count } = yield (0, cards_model_1.findById)(req.params.id);
     if (count === 0) {
         return res.status(404).json({ message: 'Card not found' });
     }
-    const { rows: resistances } = yield (0, cards_services_1.weaknessTo)(cards.at(0));
+    const { rows: resistances } = yield (0, cards_model_1.weaknessTo)(cards.at(0));
     res.status(200).json({ result: resistances });
 });
 exports.getWeaknesses = getWeaknesses;
