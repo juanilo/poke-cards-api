@@ -49,7 +49,7 @@ export const PokemonCardSchemaUpdate = z.object({
   name: z.string().optional(),
   type: pokemonTypeSchema.optional(),
   image_url: z.string().url().optional(),
-  hp: z.number().int().positive().optional(),
+  hp: z.number().int().min(0).optional(),
   attacks: z.array(attackSchema).optional(),
   rarity: RaritySchema.optional(),
   resistance: abilityTupleSchema.optional(),

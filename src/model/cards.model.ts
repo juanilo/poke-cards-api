@@ -23,8 +23,6 @@ export const findAll = async (limit: number, page: number, filter: FilterType) =
       query += ' AND ';
     }
     query += `attacks @> '[{"abilities": [{"type": "${ability.toString()}"}]}]'`;
-    // params.push(ability.toString());
-
   }
 
   if (type) {
@@ -38,23 +36,21 @@ export const findAll = async (limit: number, page: number, filter: FilterType) =
   const totalQuery = query;
   const totalParams = [...params];
 
+  query += ` ORDER BY id ASC`;
+
   if (limit && page) {
     const offset = (page - 1) * limit;
     query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
     params.push(limit.toString(), offset.toString());
   }
 
-  console.log('query :', query);
-  console.log('params:', params);
-
   const response: QueryResult = await connection.query(query, params);
-  const total : QueryResult = await connection.query(totalQuery, totalParams);
+  const total: QueryResult = await connection.query(totalQuery, totalParams);
 
   return {
-    cards : response.rows,
-    totalCards : total.rowCount,
+    cards: response.rows,
+    totalCards: total.rowCount,
   };
-
 };
 
 export const findById = async (id: string) => {
@@ -94,7 +90,7 @@ export const update = async (cardData: PokemonCard, id: string | number) => {
     (name ? `name = '${name}', ` : '') +
     (type ? `type = '${type}', ` : '') +
     (image_url ? `image_url = '${image_url}', ` : '') +
-    (hp ? `hp = '${hp}', ` : '') +
+    (hp || hp === 0 ? `hp = '${hp}', ` : '') +
     (attacks ? `attacks = '${JSON.stringify(attacks)}', ` : '') +
     (rarity ? `rarity = '${rarity}', ` : '') +
     (resistance ? `resistance = '${JSON.stringify(resistance)}', ` : '') +
