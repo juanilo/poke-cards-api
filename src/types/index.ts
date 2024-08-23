@@ -36,7 +36,7 @@ export enum RarityType {
 
 export enum PokemonType {
   Basic = 'Basic',
-  Legendary  = 'Legendary',
+  Legendary = 'Legendary',
   StageI = 'Stage I',
   StageII = 'Stage II',
 }
@@ -59,4 +59,10 @@ export type ResultType = {
   originalAttack: number;
   attackModified: number;
   succeed: boolean;
-}
+};
+
+export type FilterType = {
+  name?: string;
+  ability?: string;
+  type?: string;
+};

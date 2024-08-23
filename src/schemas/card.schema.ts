@@ -19,12 +19,7 @@ const abilitySchema = z.enum([
   AbilityType.Fairy,
 ]);
 
-const pokemonTypeSchema = z.enum([
-  PokemonType.Basic,
-  PokemonType.Legendary,
-  PokemonType.StageI,
-  PokemonType.StageII,
-]);
+const pokemonTypeSchema = z.enum([PokemonType.Basic, PokemonType.Legendary, PokemonType.StageI, PokemonType.StageII]);
 
 const RaritySchema = z.enum([RarityType.Common, RarityType.Uncommon, RarityType.Rare]);
 

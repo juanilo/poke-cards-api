@@ -9,19 +9,48 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.weaknessTo = exports.resistancesTo = exports.battle = exports.remove = exports.update = exports.create = exports.findAllNames = exports.findById = exports.findAll = exports.count = void 0;
+exports.weaknessTo = exports.resistancesTo = exports.battle = exports.remove = exports.update = exports.create = exports.findAllNames = exports.findById = exports.findAll = void 0;
 const database_1 = require("../database/database");
-const count = () => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield database_1.connection.query('SELECT COUNT(*) FROM cards');
-    return response;
-});
-exports.count = count;
-const findAll = (limit, page) => __awaiter(void 0, void 0, void 0, function* () {
-    const query = 'SELECT * FROM cards LIMIT $1 OFFSET $2';
-    const offset = (page - 1) * limit;
-    const params = [limit, offset];
+const findAll = (limit, page, filter) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, ability, type } = filter;
+    let query = 'SELECT * FROM cards';
+    const params = [];
+    if (name || ability || type) {
+        query += ' WHERE ';
+    }
+    if (name) {
+        query += `name ILIKE $${params.length + 1}`;
+        params.push(`%${name}%`);
+    }
+    if (ability) {
+        if (params.length > 0) {
+            query += ' AND ';
+        }
+        query += `attacks @> '[{"abilities": [{"type": "${ability.toString()}"}]}]'`;
+        // params.push(ability.toString());
+    }
+    if (type) {
+        if (params.length > 0) {
+            query += ' AND ';
+        }
+        query += `type ILIKE $${params.length + 1}`;
+        params.push(`${type}`);
+    }
+    const totalQuery = query;
+    const totalParams = [...params];
+    if (limit && page) {
+        const offset = (page - 1) * limit;
+        query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+        params.push(limit.toString(), offset.toString());
+    }
+    console.log('query :', query);
+    console.log('params:', params);
     const response = yield database_1.connection.query(query, params);
-    return response;
+    const total = yield database_1.connection.query(totalQuery, totalParams);
+    return {
+        cards: response.rows,
+        totalCards: total.rowCount,
+    };
 });
 exports.findAll = findAll;
 const findById = (id) => __awaiter(void 0, void 0, void 0, function* () {

@@ -1,19 +1,60 @@
 import { connection } from '../database/database';
 import { QueryResult } from 'pg';
 
-import { PokemonCard, AttackType, AbilityType, ResultType } from '../types';
+import { PokemonCard, AttackType, AbilityType, ResultType, FilterType } from '../types';
 
-export const count = async () => {
-  const response: QueryResult = await connection.query('SELECT COUNT(*) FROM cards');
-  return response;
-}
+export const findAll = async (limit: number, page: number, filter: FilterType) => {
+  const { name, ability, type } = filter;
 
-export const findAll = async (limit: number, page: number ) => {
-  const query = 'SELECT * FROM cards LIMIT $1 OFFSET $2';
-  const offset = (page - 1) * limit;
-  const params = [limit, offset];
+  let query = 'SELECT * FROM cards';
+  const params: string[] = [];
+
+  if (name || ability || type) {
+    query += ' WHERE ';
+  }
+
+  if (name) {
+    query += `name ILIKE $${params.length + 1}`;
+    params.push(`%${name}%`);
+  }
+
+  if (ability) {
+    if (params.length > 0) {
+      query += ' AND ';
+    }
+    query += `attacks @> '[{"abilities": [{"type": "${ability.toString()}"}]}]'`;
+    // params.push(ability.toString());
+
+  }
+
+  if (type) {
+    if (params.length > 0) {
+      query += ' AND ';
+    }
+    query += `type ILIKE $${params.length + 1}`;
+    params.push(`${type}`);
+  }
+
+  const totalQuery = query;
+  const totalParams = [...params];
+
+  if (limit && page) {
+    const offset = (page - 1) * limit;
+    query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+    params.push(limit.toString(), offset.toString());
+  }
+
+  console.log('query :', query);
+  console.log('params:', params);
+
   const response: QueryResult = await connection.query(query, params);
-  return response;
+  const total : QueryResult = await connection.query(totalQuery, totalParams);
+
+  return {
+    cards : response.rows,
+    totalCards : total.rowCount,
+  };
+
 };
 
 export const findById = async (id: string) => {

@@ -13,16 +13,25 @@ exports.getWeaknesses = exports.getResistances = exports.getFightResult = export
 const cards_model_1 = require("../model/cards.model");
 // GET /cards
 const getCards = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { limit, page } = req.query;
+    let { limit, page, name, ability, type } = req.query;
+    const filters = {};
+    if (name) {
+        filters.name = String(name);
+    }
+    if (ability) {
+        filters.ability = String(ability);
+    }
+    if (type) {
+        filters.type = String(type);
+    }
     if (limit && +limit < 1) {
         return res.status(404).json({ message: 'Limit must be positive.' });
     }
     if (page && +page < 1) {
         return res.status(404).json({ message: 'Page must be positive.' });
     }
-    const { rows: countRows } = yield (0, cards_model_1.count)();
-    const { rows: cards } = yield (0, cards_model_1.findAll)(limit ? +limit : 99, page ? +page : 1);
-    res.status(200).json({ cards: cards, count: countRows.at(0).count });
+    const results = yield (0, cards_model_1.findAll)(limit ? +limit : 99, page ? +page : 1, filters);
+    res.status(200).json(results);
 });
 exports.getCards = getCards;
 // GET /cards/:id

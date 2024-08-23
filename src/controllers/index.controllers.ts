@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 
 import { QueryResult } from 'pg';
 import {
-  count,
   findById,
   battle,
   resistancesTo,
@@ -11,13 +10,25 @@ import {
   update,
   remove,
   findAll,
-  findAllNames
+  findAllNames,
 } from '../model/cards.model';
-import { AttackType, PokemonCard } from '../types/index';
+import { AttackType, FilterType, PokemonCard } from '../types/index';
 
 // GET /cards
 export const getCards = async (req: Request, res: Response) => {
-  let { limit, page } = req.query;
+  let { limit, page, name, ability, type } = req.query;
+
+  const filters: FilterType = {};
+
+  if (name) {
+    filters.name = String(name);
+  }
+  if (ability) {
+    filters.ability = String(ability);
+  }
+  if (type) {
+    filters.type = String(type);
+  }
 
   if (limit && +limit < 1) {
     return res.status(404).json({ message: 'Limit must be positive.' });
@@ -27,9 +38,8 @@ export const getCards = async (req: Request, res: Response) => {
     return res.status(404).json({ message: 'Page must be positive.' });
   }
 
-  const { rows: countRows }: QueryResult = await count();
-  const { rows: cards }: QueryResult = await findAll(limit ? +limit : 99, page? +page : 1 ) ;
-  res.status(200).json({ cards: cards, count: countRows.at(0).count });
+  const results = await findAll(limit ? +limit : 99, page ? +page : 1, filters);
+  res.status(200).json(results);
 };
 
 // GET /cards/:id

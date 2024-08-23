@@ -20,12 +20,7 @@ const abilitySchema = zod_1.z.enum([
     types_1.AbilityType.Dark,
     types_1.AbilityType.Fairy,
 ]);
-const pokemonTypeSchema = zod_1.z.enum([
-    types_1.PokemonType.Basic,
-    types_1.PokemonType.Legendary,
-    types_1.PokemonType.StageI,
-    types_1.PokemonType.StageII,
-]);
+const pokemonTypeSchema = zod_1.z.enum([types_1.PokemonType.Basic, types_1.PokemonType.Legendary, types_1.PokemonType.StageI, types_1.PokemonType.StageII]);
 const RaritySchema = zod_1.z.enum([types_1.RarityType.Common, types_1.RarityType.Uncommon, types_1.RarityType.Rare]);
 const abilityTupleSchema = zod_1.z.object({
     type: abilitySchema,

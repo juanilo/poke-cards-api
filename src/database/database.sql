@@ -151,17 +151,6 @@ VALUES (
                 "value": 1
               }
             ]
-          },
-          {
-            "id": 1,
-            "name": "Dragon Claw",
-            "damage": 80,
-            "abilities": [
-              {
-                "type": "Dark",
-                "value": 1
-              }
-            ]
           }
         ]',
         'Common',
@@ -218,23 +207,8 @@ VALUES (
         '[
           {
             "id": 0,
-            "name": "Thunderbolt",
-            "damage": 90,
-            "abilities": [
-              {
-                "type": "Electric",
-                "value": 2
-              },
-              {
-                "type": "Fire",
-                "value": 1
-              }
-            ]
-          },
-          {
-            "id": 1,
-            "name": "Dragon Claw",
-            "damage": 80,
+            "name": "Dig Clawsd",
+            "damage": 20,
             "abilities": [
               {
                 "type": "Dark",
@@ -261,26 +235,22 @@ VALUES (
         '[
           {
             "id": 0,
-            "name": "Thunderbolt",
-            "damage": 90,
+            "name": "Pound",
+            "damage": 10,
             "abilities": [
               {
-                "type": "Electric",
-                "value": 2
-              },
-              {
-                "type": "Fire",
+                "type": "Fairy",
                 "value": 1
               }
             ]
           },
           {
             "id": 1,
-            "name": "Dragon Claw",
-            "damage": 80,
+            "name": "Shining Claw",
+            "damage": 10,
             "abilities": [
               {
-                "type": "Dark",
+                "type": "Psychic",
                 "value": 1
               }
             ]
@@ -298,32 +268,32 @@ VALUES (
     ),
     (
         'Charmander',
-        'Basic',
+        'Legendary',
         'https://pokemon-project.com/pokedex/img/sprite/Home/256/4.png',
         60,
         '[
           {
             "id": 0,
-            "name": "Thunderbolt",
-            "damage": 90,
+            "name": "Scratch",
+            "damage": 10,
             "abilities": [
               {
-                "type": "Electric",
-                "value": 2
-              },
-              {
-                "type": "Fire",
+                "type": "Fairy",
                 "value": 1
               }
             ]
           },
           {
             "id": 1,
-            "name": "Dragon Claw",
-            "damage": 80,
+            "name": "Ember",
+            "damage": 30,
             "abilities": [
               {
-                "type": "Dark",
+                "type": "Fire",
+                "value": 1
+              },
+              {
+                "type": "Fairy",
                 "value": 1
               }
             ]
@@ -331,11 +301,11 @@ VALUES (
         ]',
         'Uncommon',
         '{
-          "type": "Electric",
+          "type": "Water",
           "value": 2
         }',
         '{
-          "type": "Steel",
+          "type": "Fairy",
           "value": 20
         }'
     ),
@@ -348,12 +318,8 @@ VALUES (
           {
             "id": 0,
             "name": "Thunderbolt",
-            "damage": 90,
+            "damage": 20,
             "abilities": [
-              {
-                "type": "Electric",
-                "value": 2
-              },
               {
                 "type": "Fire",
                 "value": 1
@@ -362,23 +328,27 @@ VALUES (
           },
           {
             "id": 1,
-            "name": "Dragon Claw",
-            "damage": 80,
+            "name": "Raging Claw",
+            "damage": 20,
             "abilities": [
               {
-                "type": "Dark",
+                "type": "Fire",
                 "value": 1
+              },
+              {
+                "type": "Fairy",
+                "value": 2
               }
             ]
           }
         ]',
         'Rare',
         '{
-          "type": "Electric",
+          "type": "Fairy",
           "value": 2
         }',
         '{
-          "type": "Steel",
-          "value": 20
+          "type": "Water",
+          "value": 2
         }'
     )
