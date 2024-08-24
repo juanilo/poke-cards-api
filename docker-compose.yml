@@ -1,0 +1,7 @@
+version: '3'
+services:
+  pokecards:
+    build: .
+    ports:
+      - '5432:5432'
+    image: pokecards

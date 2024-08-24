@@ -135,3 +135,8 @@ export const getWeaknesses = async (req: Request, res: Response) => {
 
   res.status(200).json({ result: resistances });
 };
+
+// GET *
+export const notFound = async (_req: Request, res: Response) => {
+  res.status(404).json({ message: 'Not found' });
+};

@@ -9,6 +9,7 @@ import {
   getWeaknesses,
   getResistances,
   getAllNames,
+  notFound,
 } from '../controllers/index.controllers';
 import { schemaValidation } from '../middlewares/schemaValidator.middleware';
 import { validateRequestIdParam, validateRequestBody } from '../middlewares/requestsValidator.middleware';
@@ -25,5 +26,6 @@ router.delete('/cards/:id', validateRequestIdParam, deleteCard);
 router.post('/cards/:id/attack', validateRequestIdParam, getFightResult);
 router.get('/cards/:id/weaknesses', validateRequestIdParam, getWeaknesses);
 router.get('/cards/:id/resistances', validateRequestIdParam, getResistances);
+router.get('*', notFound);
 
 export default router;

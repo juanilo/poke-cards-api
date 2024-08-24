@@ -4,9 +4,9 @@
   "description": "Pokemon Cards API",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"npm run build\" \"npm run start\"",
-    "build": "tsc --watch",
-    "start": "nodemon .\\dist \\index.js",
+    "dev": "concurrently \"tsc --watch\" \"npm run start\"",
+    "build": "tsc",
+    "start": "nodemon ./dist/index.js",
     "format": "npx prettier --write ."
   },
   "keywords": [],

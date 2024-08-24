@@ -1,5 +1,3 @@
-USE pokecards;
-
 CREATE TABLE cards (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255),
