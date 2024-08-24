@@ -16,9 +16,15 @@ run: `docker-compose up -d`
 
 this will create the image, run the container in detached mode.
 
+After this you should see a Docker container running with PostgreSQL database set up with `pokecards` DB and `cards` table created and populated with data with port 5432 opened.
+
 Now lets compile and run the app :
 
+## Compile and run the API :
+
 run `npm run build && npm run start`
+
+After should be running on "http://localhost:<4000 or the one specified at PORT environment variable>/api/v1/cards"
 
 ## Dev
 
@@ -30,6 +36,6 @@ will auto compile and run the app after every update on the codebase.
 
 ## Documentation :
 
-access to whole documentation page on
+access to whole Swagger documentation page on :
 
 http://localhost:4000/api/v1/cards/docs/
