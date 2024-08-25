@@ -54,14 +54,15 @@ export const getCardById = async (req: Request, res: Response) => {
 };
 
 // GET /cards/names
-export const getAllNames = async (req: Request, res: Response) => {
-  const { rows: names, rowCount: count } = await findAllNames();
+export const getAllNames = async (_req: Request, res: Response) => {
+  const { rows: names } = await findAllNames();
 
   res.status(200).json(names);
 };
 
 // POST /cards
 export const postCard = async (req: Request, res: Response) => {
+  console.log('POST /cards', req.body);
   await create(req.body);
   res.status(201).json({ message: 'Card successfully created' });
 };

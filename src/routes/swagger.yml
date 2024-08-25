@@ -1,17 +1,74 @@
 components:
   schemas:
+    AbilityType :
+      type: string
+      description: The type of the ability.
+      example: Water
+      enum:
+        - Water
+        - Fire
+        - Grass
+        - Electric
+        - Ice
+        - Poison
+        - Ground
+        - Flying
+        - Psychic
+        - Bug
+        - Rock
+        - Steel
+        - Dragon
+        - Dark
+        - Fairy
+    RarityType :
+      type: string
+      description: The rarity of the pokemon.
+      example: Common
+      enum:
+        - Common
+        - Uncommon
+        - Rare
+    PokemonType :
+      type: string
+      description: The type of the pokemon.
+      example: Legendary
+      enum:
+        - Basic
+        - Legendary
+        - Stage I
+        - Stage II
+    PokemonName:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the card.
+          example: 1
+        name:
+          type: string
+          description: The card's name.
+          example: Pikachu
     Ability:
       type: object
       properties:
         type:
-          type: integer
-          description: The type of the ability.
-          example: Water
+          $ref: '#/components/schemas/AbilityType'
         value:
           type: integer
-          description: The ability value.
+          description: The amount of the ability, could be points of resistance or multiplier if its a weakness.
           example: 2
-    Attack:
+    AttackName:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the card.
+          example: 34
+        name:
+          type: string
+          description: The card's name.
+          example: Thunder B
+    AttackType:
       type: object
       properties:
         id:
@@ -39,9 +96,7 @@ components:
           description: The card's name.
           example: Pikachu
         type:
-          type: string
-          description: The type of the card.
-          example: basic
+          $ref: '#/components/schemas/PokemonType'
         image_url:
           type: string
           description: The URL to the image.
@@ -53,17 +108,56 @@ components:
           example: 150
         attacks:
           type: array
+          decription: The attacks of the card.
           items:
-            $ref: '#/components/schemas/Attack'
+            $ref: '#/components/schemas/AttackType'
         rarity:
-          type: integer
-          description: The rarity of the card.
-          example: common
-        resistence:
+          $ref: '#/components/schemas/RarityType'
+        resistance:
           $ref: '#/components/schemas/Ability'
         weakness:
           $ref: '#/components/schemas/Ability'
-    BattleResults:
+    PokemonCardUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The card's name.
+          example: Pikachu
+          required: false
+        type:
+          type: string
+          description: The type of the card.
+          example: basic
+          required: false
+        image_url:
+          type: string
+          description: The URL to the image.
+          format: uri
+          example: https://raw.test.com/img.jpg
+          required: false
+        hp:
+          type: integer
+          description: The card's health points.
+          example: 150
+          required: false
+        attacks:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttackType'
+          required: false
+        rarity:
+          type: integer
+          description: The rarity of the card.
+          example: Common
+          required: false
+        resistance:
+          $ref: '#/components/schemas/Ability'
+          required: false
+        weakness:
+          $ref: '#/components/schemas/Ability'
+          required: false
+    ResultType:
       type: object
       properties:
         card:
@@ -86,8 +180,22 @@ components:
           type: boolean
           description: Whether the attack was successful
           example: true
+    FilterType:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The ability's name.
+          example: Thunder Bolt
+          required: false
+        ability:
+          type: AbilityType
+          required: false
+        type:
+          type: PokemonType
+          required: false
 
-/cards:
+/api/v1/cards:
   get:
     summary: Get all cards
     responses:
@@ -99,14 +207,33 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/PokemonCard'
+      default:
+        description: Unexpected error
   post:
     summary: Post new card
+    parameters:
+      - in: body
+        name: card
+        schema:
+          $ref: '#/components/schemas/PokemonCard'
+        required: true
+        description: A new card to be added.
     responses:
-      200:
-        description: Card successfully created'
-/cards/{id}:
+      201:
+        description: Card successfully created
+      400:
+        description: Invalid request body
+      default:
+        description: Unexpected error
+/api/v1/cards/{id}:
   get:
     summary: Get card by id
+    parameters:
+      - in: id
+        name: cardId
+        type: integer
+        required: true
+        description: Id of the card
     responses:
       200:
         description: The card with the given ID
@@ -114,43 +241,91 @@ components:
           application/json:
             schema:
               $ref: '#/components/schemas/PokemonCard'
+      400:
+        description: Invalid request id param
       404:
         description: Card not found
+      default:
+        description: Unexpected error
   put:
     summary: Update card by id
-    # parameters:
-    #   in: body
-    #     name: CardData
-    #     description: Card data
-    #     content:
-    #       application/json:
-    #         schema:
-    #           $ref: '#/components/schemas/PokemonCard'
+    parameters:
+      - in: id
+        name: cardId
+        type: integer
+        required: true
+        description: Id of the card
     responses:
       200:
         description: Card updated successfully
+      400 (1):
+        description: Invalid request id param
+      400 (2):
+        description: Invalid request body
       404:
         description: Card not found
+      default:
+        description: Unexpected error
   delete:
     summary: Delete a card by id
+    parameters:
+      - in: id
+        name: cardId
+        type: integer
+        required: true
+        description: Id of the card
     responses:
       200:
         description: Card deleted successfully
+      400:
+        description: Invalid request id param
       404:
         description: Card not found
-/cards/{id}/attack:
+      default:
+        description: Unexpected error
+/api/v1/cards/{id}/attack:
   post:
     summary: Calculate the result of a battle between two cards based on target's HP minus calculated damage.
+    parameters:
+      - in: id
+        name: cardId
+        type: integer
+        required: true
+        description: Id of the card
+    requestBody:
+      description: The card to be used as target for the battle
+      required: true
+      content:
+        targetId:
+          type: integer
+          description: Id of the card to be used as target for the battle
+          example: 1
+        attackId:
+          type: integer
+          description: Id of the attack to be used for the battle
+          example: 1
     responses:
       200:
         description: result of attack with calculations, and attack details.
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BattleResults'
-/cards/{id}/weaknesses:
+              $ref: '#/components/schemas/ResultType'
+      400 (1):
+        description: Invalid request id param
+      400 (2):
+        description: Invalid request body
+      default:
+        description: Unexpected error
+/api/v1/cards/{id}/weaknesses:
   get:
     summary: Get a list of cards that are weaker than the card given by id
+    parameters:
+      - in: id
+        name: cardId
+        type: integer
+        required: true
+        description: Id of the card
     responses:
       200:
         description: A list of weaker cards
@@ -160,13 +335,21 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/PokemonCard'
+      400:
+        description: Invalid request id param
       404:
-        description: Attacker/Target card not found.
-      406:
-        description: Attack not found.
-/cards/{id}/resistances:
+        description: Card not found
+      default:
+        description: Unexpected error
+/api/v1/cards/{id}/resistances:
   get:
     summary: Get a list of cards that are resistant to any attack from the card given by id
+    parameters:
+      - in: id
+        name: cardId
+        type: integer
+        required: true
+        description: Id of the card
     responses:
       200:
         description: A list of cards that are resistant
@@ -176,5 +359,23 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/PokemonCard'
+      400:
+        description: Invalid request id param
       404:
         description: Card not found
+      default:
+        description: Unexpected error
+/api/v1/cards/names:
+  get:
+    summary: Get all cards names with their Ids
+    responses:
+      200:
+        description: A list of card names alogn with the ids.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/PokemonName'
+      default:
+        description: Unexpected error
