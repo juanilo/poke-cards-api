@@ -59,7 +59,7 @@ export const findById = async (id: string) => {
 };
 
 export const findAllNames = async () => {
-  const response: QueryResult = await connection.query('SELECT id, name FROM cards');
+  const response: QueryResult = await connection.query('SELECT id, name, image_url FROM cards');
   return response;
 };
 
