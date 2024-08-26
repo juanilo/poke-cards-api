@@ -5,7 +5,6 @@ import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerJsdocOptions from './../swagger.json';
-
 import errorHandlerMiddleware from './middlewares/errorHandler.middleware';
 import { notFound } from './controllers/index.controllers';
 
