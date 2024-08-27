@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-
+import jwt from 'jsonwebtoken';
 import { QueryResult } from 'pg';
 import {
   findById,
@@ -13,6 +13,22 @@ import {
   findAllNames,
 } from '../model/cards.model';
 import { AttackType, FilterType, PokemonCard } from '../types/index';
+
+const SECRET = process.env.ACCESS_TOKEN_SECRET || '';
+
+if (SECRET === '') {
+  console.log('ACCESS_TOKEN_SECRET is not defined');
+}
+
+// GET /login
+export const login = async (req: Request, res: Response) => {
+  const username = req.body?.username || '';
+  const user = { name: username };
+
+  const accessToken = jwt.sign(user, SECRET);
+
+  res.json({ accessToken });
+}
 
 // GET /cards
 export const getCards = async (req: Request, res: Response) => {

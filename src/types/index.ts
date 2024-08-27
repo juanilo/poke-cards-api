@@ -1,3 +1,11 @@
+import { JwtPayload } from "jsonwebtoken";
+
+declare module "express-serve-static-core" {
+  interface Request {
+    user?: JwtPayload;
+  }
+}
+
 export enum AbilityType {
   Water = 'Water',
   Fire = 'Fire',
