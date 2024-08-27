@@ -22,11 +22,15 @@ Now lets compile and run the app :
 
 ## Compile and run the API :
 
+IMPORTANT : make sure you have te environment variables set up, check `example.env` file to know which variables you should set up.
+
 run `npm run build && npm run start`
 
 After should be running on "http://localhost:<4000 or the one specified at PORT environment variable>/api/v1/cards"
 
 ## Dev
+
+IMPORTANT : copy `example.env` as `.env` in order to have set all the environment variables set up.
 
 To run and work in dev mode, use the command :
 

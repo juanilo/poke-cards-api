@@ -2,16 +2,22 @@ import dotenv from 'dotenv';
 import { Pool } from 'pg';
 
 if (process.env.NODE_ENV !== 'PROD') {
-  console.log('NODE_ENV', 'DEV');
+  console.log('environment=DEV');
   dotenv.config();
 }
 
-const config = {
-  user: process.env.POSTGRE_USER,
-  host: process.env.POSTGRE_URL,
-  password: process.env.POSTGRE_PASSWORD,
+const USER = process.env.POSTGRE_USER || '';
+const PASSWORD = process.env.POSTGRE_PASSWORD || '';;
+const URL = process.env.POSTGRE_URL || '';
+
+if (!USER || !PASSWORD) {
+  console.log('DB Credentials / HOST values not defined');
+}
+
+export const connection = new Pool({
+  user: USER,
+  host: URL,
+  password: PASSWORD,
   database: 'pokecards',
   port: 5432,
-}
-console.log(config);
-export const connection = new Pool(config);
+});
