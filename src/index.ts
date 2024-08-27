@@ -6,7 +6,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerJsdocOptions from './../swagger.json';
 import errorHandlerMiddleware from './middlewares/errorHandler.middleware';
-import { notFound } from './controllers/index.controllers';
+import { login } from './controllers/index.controllers';
 
 const swaggerDocument = swaggerJsdoc(swaggerJsdocOptions);
 
@@ -19,9 +19,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(morgan('dev'));
 
+// routes
+app.post('/api/v1/login', login );
 app.use('/api/v1/cards/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/v1', routes);
-app.use('*', notFound);
 
 app.use(errorHandlerMiddleware);
 
