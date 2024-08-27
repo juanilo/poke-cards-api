@@ -194,7 +194,34 @@ components:
         type:
           type: PokemonType
           required: false
-
+    LoginResponseType:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: The JWT token to use in further endpoint calls.
+/api/v1/login:
+  post:
+    summary: Login to the API
+    requestBody:
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+                example: John
+    responses:
+      200:
+        description: Login successful.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginResponseType'
+      default:
+        description: Unexpected error
 /api/v1/cards:
   get:
     summary: Get all cards
